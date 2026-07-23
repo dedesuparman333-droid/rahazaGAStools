@@ -35,16 +35,16 @@ export function Merger() {
 
     modules.forEach(mod => {
       combinedGS += `// ===== MODUL: ${mod.name} =====\n${mod.gs}\n\n`;
-      navHtml += `<li class="nav-item"><a class="nav-link ${isFirst ? 'active' : ''}" href="#" onclick="switchTab('${mod.id}', this, event, '${mod.name}')"><i class="bi bi-grid-1x2"></i> <span>${escapeHtml(mod.name)}</span></a></li>`;
+      navHtml += `<a class="nav-item-btn ${isFirst ? 'active' : ''}" href="#" onclick="switchTab('${mod.id}', this, event, '${escapeHtml(mod.name)}')"><i class="bi bi-app-indicator"></i> <span>${escapeHtml(mod.name)}</span></a>`;
       
       const unifiedTheme = `
     <!-- INJECTED UNIFIED THEME -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-      body { font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #ffffff; color: #1f2937; padding: 20px; margin: 0; }
+      body { font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: transparent; color: #1f2937; padding: 20px; margin: 0; }
       .card { border: none; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); border-radius: 12px; border: 1px solid #f3f4f6; }
-      .btn-primary { background-color: #4f46e5; border-color: #4f46e5; }
-      .btn-primary:hover { background-color: #4338ca; border-color: #4338ca; }
+      .btn-primary { background-color: #2563eb; border-color: #2563eb; }
+      .btn-primary:hover { background-color: #1d4ed8; border-color: #1d4ed8; }
       table { font-size: 0.95rem; }
     </style>
     <!-- END INJECTED THEME -->
@@ -78,55 +78,51 @@ export function Merger() {
   <base target="_top">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>App Dashboard</title>
+  <title>App Workspace</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <style>
-    :root { --primary: #4f46e5; --bg: #f3f4f6; }
-    body { background: var(--bg); font-family: 'Inter', 'Segoe UI', sans-serif; margin: 0; padding: 0; display: flex; height: 100vh; overflow: hidden; }
-    .sidebar { width: 260px; background: #ffffff; border-right: 1px solid #e5e7eb; display: flex; flex-direction: column; z-index: 10; }
-    .sidebar-header { padding: 20px; font-size: 1.25rem; font-weight: 700; color: #111827; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; gap: 10px; }
-    .sidebar-header i { color: var(--primary); }
-    .nav-pills { flex-direction: column; padding: 15px; gap: 5px; margin: 0; overflow-y: auto; }
-    .nav-pills .nav-link { color: #4b5563; border-radius: 8px; padding: 12px 15px; font-weight: 500; display: flex; align-items: center; gap: 10px; transition: all 0.2s; border: none; text-align: left; cursor: pointer; }
-    .nav-pills .nav-link:hover { background: #f9fafb; color: #111827; }
-    .nav-pills .nav-link.active { background: #eef2ff; color: var(--primary); font-weight: 600; }
-    .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-    .topbar { height: 70px; background: #ffffff; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; padding: 0 30px; font-weight: 600; color: #111827; font-size: 1.1rem; }
-    .sandbox-container { flex: 1; padding: 20px; overflow: hidden; }
-    .sandbox-frame { width: 100%; height: 100%; border: none; background: #fff; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); border: 1px solid #e5e7eb; }
+    :root { --primary: #2563eb; --bg: #f8fafc; --surface: #ffffff; --border: #e2e8f0; }
+    body { background: var(--bg); font-family: 'Inter', system-ui, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
     
-    @media (max-width: 768px) {
-      body { flex-direction: column; }
-      .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid #e5e7eb; }
-      .nav-pills { flex-direction: row; overflow-x: auto; padding: 10px; }
-      .nav-pills .nav-link { white-space: nowrap; }
-      .nav-pills .nav-link span { display: none; }
-      .topbar { display: none; }
-      .sandbox-container { padding: 10px; }
-    }
+    .app-header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 1rem; display: flex; align-items: center; justify-content: space-between; height: 60px; z-index: 10; flex-shrink: 0; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
+    .brand { font-size: 1.125rem; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 0.5rem; }
+    .brand i { color: var(--primary); font-size: 1.25rem; }
+    .brand-title { color: #64748b; font-size: 0.9rem; font-weight: 500; margin-left: 0.5rem; border-left: 1px solid #cbd5e1; padding-left: 0.75rem; }
+    
+    .nav-container { display: flex; gap: 0.5rem; overflow-x: auto; padding: 0.75rem 1rem; background: var(--surface); border-bottom: 1px solid var(--border); scrollbar-width: none; }
+    .nav-container::-webkit-scrollbar { display: none; }
+    .nav-item-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 500; color: #475569; border: 1px solid transparent; background: transparent; cursor: pointer; transition: all 0.2s; white-space: nowrap; text-decoration: none; }
+    .nav-item-btn:hover { background: #f1f5f9; color: #0f172a; }
+    .nav-item-btn.active { background: var(--primary); color: #ffffff; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2); }
+    
+    .main-workspace { flex: 1; position: relative; overflow: hidden; background: var(--bg); display: flex; flex-direction: column; }
+    .sandbox-frame { width: 100%; height: 100%; border: none; display: block; flex: 1; }
   </style>
 </head>
 <body>
-  <div class="sidebar">
-    <div class="sidebar-header">
-      <i class="bi bi-box-seam-fill"></i> Workspace
+  <header class="app-header">
+    <div class="brand">
+      <i class="bi bi-layers-fill"></i> 
+      <span>Workspace</span>
+      <span class="brand-title" id="topbarTitle">Dashboard</span>
     </div>
-    <ul class="nav nav-pills" id="appTabs">${navHtml}</ul>
-  </div>
-  <div class="main-content">
-    <div class="topbar" id="topbarTitle">Dashboard</div>
-    <div class="sandbox-container">
-      <iframe id="sandboxFrame" class="sandbox-frame"></iframe>
-    </div>
-  </div>
+  </header>
+  
+  <nav class="nav-container" id="appTabs">
+    ${navHtml}
+  </nav>
+  
+  <main class="main-workspace">
+    <iframe id="sandboxFrame" class="sandbox-frame"></iframe>
+  </main>
   
   <!-- KODE HTML MASING-MASING MODUL -->${templatesHtml}
 
   <script>
     function switchTab(id, el, event, name) {
       if(event) event.preventDefault();
-      document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+      document.querySelectorAll('.nav-item-btn').forEach(n => n.classList.remove('active'));
       if(el) el.classList.add('active');
       if(name) document.getElementById('topbarTitle').innerText = name;
       
@@ -136,7 +132,7 @@ export function Merger() {
       }
     }
     window.onload = () => {
-      const firstTab = document.querySelector('.nav-link');
+      const firstTab = document.querySelector('.nav-item-btn');
       if(firstTab) firstTab.click();
     };
   </script>
