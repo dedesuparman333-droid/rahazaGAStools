@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, FileCode2, FileCode, Wand2, CheckCircle2, Copy, Check, Activity, AlertCircle, Terminal } from 'lucide-react';
+import { Plus, Trash2, FileCode2, FileCode, Wand2, CheckCircle2, Copy, Check, Activity, AlertCircle, Terminal, Monitor } from 'lucide-react';
 import { MergerModule } from '../types';
 import { escapeHtml, base64EncodeSafe } from '../lib/utils';
 
@@ -164,12 +164,13 @@ export function Merger() {
             <div className="flex justify-between items-center mb-4">
               <input 
                 type="text" 
-                className="bg-transparent border-0 font-bold text-lg text-white focus:outline-none focus:ring-0 p-0 w-full" 
+                className="bg-transparent border-b border-transparent hover:border-white/20 font-bold text-lg text-white focus:outline-none focus:border-blue-500/50 focus:ring-0 p-1 w-full transition-colors rounded-t" 
                 value={mod.name} 
                 onChange={(e) => updateModule(mod.id, 'name', e.target.value)}
                 placeholder="Nama Modul"
+                title="Klik untuk mengubah nama modul"
               />
-              {modules.length > 2 && index > 1 && (
+              {modules.length > 1 && (
                 <button onClick={() => removeModule(mod.id)} className="text-red-400 hover:bg-red-500/20 p-2 rounded-lg transition-colors">
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -304,6 +305,22 @@ export function Merger() {
                 className="w-full h-96 bg-black/60 text-indigo-300 p-4 font-mono text-xs border-0 focus:outline-none focus:ring-0 resize-none"
                 readOnly
                 value={outHtml}
+              />
+            </div>
+          </div>
+
+          <div className="mt-6 bg-white/5 border border-white/10 rounded-2xl shadow-xl overflow-hidden flex flex-col">
+            <div className="flex justify-between items-center p-3 px-4 border-b border-white/10 bg-black/40">
+              <span className="font-bold text-[10px] text-gray-300 flex items-center gap-2 uppercase tracking-widest">
+                <Monitor className="w-3 h-3" /> Live Preview
+              </span>
+            </div>
+            <div className="w-full h-[500px] bg-white">
+              <iframe
+                title="Live Preview"
+                srcDoc={outHtml}
+                className="w-full h-full border-0"
+                sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
               />
             </div>
           </div>
