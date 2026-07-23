@@ -78,7 +78,7 @@ export function Merger() {
 
     modules.forEach(mod => {
       combinedGS += `// ===== MODUL: ${mod.name} =====\n${mod.gs}\n\n`;
-      navHtml += `<li class="nav-item"><a class="nav-link ${isFirst ? 'active' : ''}" href="#" onclick="switchTab('${mod.id}', this)">${escapeHtml(mod.name)}</a></li>`;
+      navHtml += `<li class="nav-item"><a class="nav-link ${isFirst ? 'active' : ''}" href="#" onclick="switchTab('${mod.id}', this, event)">${escapeHtml(mod.name)}</a></li>`;
       templatesHtml += `\n  <template id="template-${mod.id}">\n    ${mod.html || `<h1>${mod.name} (Kosong)</h1>`}\n  </template>`;
       isFirst = false;
     });
@@ -108,7 +108,8 @@ export function Merger() {
   <!-- KODE HTML MASING-MASING MODUL (Bisa diedit manual jika perlu) -->${templatesHtml}
 
   <script>
-    function switchTab(id, el) {
+    function switchTab(id, el, event) {
+      if(event) event.preventDefault();
       document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
       if(el) el.classList.add('active');
       const tmpl = document.getElementById('template-' + id);
@@ -116,7 +117,7 @@ export function Merger() {
         document.getElementById('sandboxFrame').srcdoc = tmpl.innerHTML;
       }
     }
-    window.onload = () => switchTab('${modules[0]?.id || ''}', document.querySelector('.nav-link'));
+    window.onload = () => switchTab('${modules[0]?.id || ''}', document.querySelector('.nav-link'), null);
   </script>
 </body>
 </html>`;
