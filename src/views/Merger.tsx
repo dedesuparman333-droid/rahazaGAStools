@@ -251,8 +251,8 @@ export function Merger() {
               </div>
               <textarea 
                 className="w-full h-96 bg-black/60 text-blue-300 p-4 font-mono text-xs border-0 focus:outline-none focus:ring-0 resize-none"
-                readOnly
                 value={outGs}
+                onChange={(e) => setOutGs(e.target.value)}
               />
             </div>
 
@@ -271,8 +271,8 @@ export function Merger() {
               </div>
               <textarea 
                 className="w-full h-96 bg-black/60 text-indigo-300 p-4 font-mono text-xs border-0 focus:outline-none focus:ring-0 resize-none"
-                readOnly
                 value={outHtml}
+                onChange={(e) => setOutHtml(e.target.value)}
               />
             </div>
           </div>
