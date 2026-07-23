@@ -78,8 +78,30 @@ export function Merger() {
 
     modules.forEach(mod => {
       combinedGS += `// ===== MODUL: ${mod.name} =====\n${mod.gs}\n\n`;
-      navHtml += `<li class="nav-item"><a class="nav-link ${isFirst ? 'active' : ''}" href="#" onclick="switchTab('${mod.id}', this, event)">${escapeHtml(mod.name)}</a></li>`;
-      templatesHtml += `\n  <template id="template-${mod.id}">\n    ${mod.html || `<h1>${mod.name} (Kosong)</h1>`}\n  </template>`;
+      navHtml += `<li class="nav-item"><a class="nav-link ${isFirst ? 'active' : ''}" href="#" onclick="switchTab('${mod.id}', this, event, '${mod.name}')"><i class="bi bi-grid-1x2"></i> <span>${escapeHtml(mod.name)}</span></a></li>`;
+      
+      const unifiedTheme = `
+    <!-- INJECTED UNIFIED THEME -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+      body { font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #ffffff; color: #1f2937; padding: 20px; margin: 0; }
+      .card { border: none; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); border-radius: 12px; border: 1px solid #f3f4f6; }
+      .btn-primary { background-color: #4f46e5; border-color: #4f46e5; }
+      .btn-primary:hover { background-color: #4338ca; border-color: #4338ca; }
+      table { font-size: 0.95rem; }
+    </style>
+    <!-- END INJECTED THEME -->
+`;
+      let finalHtml = mod.html || `<h1>${mod.name} (Kosong)</h1>`;
+      if (!finalHtml.includes('bootstrap.min.css')) {
+          if (finalHtml.includes('<head>')) {
+              finalHtml = finalHtml.replace('<head>', '<head>\n' + unifiedTheme);
+          } else {
+              finalHtml = unifiedTheme + finalHtml;
+          }
+      }
+
+      templatesHtml += `\n  <template id="template-${mod.id}">\n    ${finalHtml}\n  </template>`;
       isFirst = false;
     });
 
@@ -98,26 +120,68 @@ export function Merger() {
 <head>
   <base target="_top">
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>App Dashboard</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style> body { background: #f8f9fa; padding: 10px; } .sandbox-frame { width: 100%; height: 90vh; border: none; background: #fff; border-radius: 8px; } </style>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    :root { --primary: #4f46e5; --bg: #f3f4f6; }
+    body { background: var(--bg); font-family: 'Inter', 'Segoe UI', sans-serif; margin: 0; padding: 0; display: flex; height: 100vh; overflow: hidden; }
+    .sidebar { width: 260px; background: #ffffff; border-right: 1px solid #e5e7eb; display: flex; flex-direction: column; z-index: 10; }
+    .sidebar-header { padding: 20px; font-size: 1.25rem; font-weight: 700; color: #111827; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; gap: 10px; }
+    .sidebar-header i { color: var(--primary); }
+    .nav-pills { flex-direction: column; padding: 15px; gap: 5px; margin: 0; overflow-y: auto; }
+    .nav-pills .nav-link { color: #4b5563; border-radius: 8px; padding: 12px 15px; font-weight: 500; display: flex; align-items: center; gap: 10px; transition: all 0.2s; border: none; text-align: left; cursor: pointer; }
+    .nav-pills .nav-link:hover { background: #f9fafb; color: #111827; }
+    .nav-pills .nav-link.active { background: #eef2ff; color: var(--primary); font-weight: 600; }
+    .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .topbar { height: 70px; background: #ffffff; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; padding: 0 30px; font-weight: 600; color: #111827; font-size: 1.1rem; }
+    .sandbox-container { flex: 1; padding: 20px; overflow: hidden; }
+    .sandbox-frame { width: 100%; height: 100%; border: none; background: #fff; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); border: 1px solid #e5e7eb; }
+    
+    @media (max-width: 768px) {
+      body { flex-direction: column; }
+      .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid #e5e7eb; }
+      .nav-pills { flex-direction: row; overflow-x: auto; padding: 10px; }
+      .nav-pills .nav-link { white-space: nowrap; }
+      .nav-pills .nav-link span { display: none; }
+      .topbar { display: none; }
+      .sandbox-container { padding: 10px; }
+    }
+  </style>
 </head>
 <body>
-  <ul class="nav nav-pills mb-3" id="appTabs">${navHtml}</ul>
-  <iframe id="sandboxFrame" class="sandbox-frame"></iframe>
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <i class="bi bi-box-seam-fill"></i> Workspace
+    </div>
+    <ul class="nav nav-pills" id="appTabs">${navHtml}</ul>
+  </div>
+  <div class="main-content">
+    <div class="topbar" id="topbarTitle">Dashboard</div>
+    <div class="sandbox-container">
+      <iframe id="sandboxFrame" class="sandbox-frame"></iframe>
+    </div>
+  </div>
   
-  <!-- KODE HTML MASING-MASING MODUL (Bisa diedit manual jika perlu) -->${templatesHtml}
+  <!-- KODE HTML MASING-MASING MODUL -->${templatesHtml}
 
   <script>
-    function switchTab(id, el, event) {
+    function switchTab(id, el, event, name) {
       if(event) event.preventDefault();
       document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
       if(el) el.classList.add('active');
+      if(name) document.getElementById('topbarTitle').innerText = name;
+      
       const tmpl = document.getElementById('template-' + id);
       if(tmpl) {
         document.getElementById('sandboxFrame').srcdoc = tmpl.innerHTML;
       }
     }
-    window.onload = () => switchTab('${modules[0]?.id || ''}', document.querySelector('.nav-link'), null);
+    window.onload = () => {
+      const firstTab = document.querySelector('.nav-link');
+      if(firstTab) firstTab.click();
+    };
   </script>
 </body>
 </html>`;
