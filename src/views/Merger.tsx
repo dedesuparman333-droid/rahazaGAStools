@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, FileCode2, FileCode, Wand2, CheckCircle2, Copy, Check, Activity, AlertCircle, Terminal, Monitor } from 'lucide-react';
+import { Plus, Trash2, FileCode2, FileCode, Wand2, CheckCircle2, Copy, Check, Monitor } from 'lucide-react';
 import { MergerModule } from '../types';
 import { escapeHtml, base64EncodeSafe } from '../lib/utils';
 
@@ -8,8 +8,6 @@ export function Merger() {
     { id: '1', name: 'Dashboard Utama', gs: '', html: '' },
     { id: '2', name: 'Fitur Report', gs: '', html: '' }
   ]);
-  const [analysisResult, setAnalysisResult] = useState<{type: 'success'|'warning'|'info', text: string}[] | null>(null);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
   
   const [outGs, setOutGs] = useState('');
   const [outHtml, setOutHtml] = useState('');
@@ -27,47 +25,6 @@ export function Merger() {
 
   const removeModule = (id: string) => {
     setModules(modules.filter(mod => mod.id !== id));
-  };
-
-  const runDiagnostics = () => {
-    setIsAnalyzing(true);
-    setAnalysisResult(null);
-    setTimeout(() => {
-      const results: {type: 'success'|'warning'|'info', text: string}[] = [];
-      let allGs = '';
-      let allFunctions: string[] = [];
-
-      modules.forEach(mod => {
-        allGs += mod.gs + '\n';
-        const matches = mod.gs.match(/function\s+([a-zA-Z_$][0-9a-zA-Z_$]*)\s*\(/g);
-        if (matches) {
-          matches.forEach(m => {
-            const fnName = m.replace('function', '').replace('(', '').trim();
-            allFunctions.push(fnName);
-          });
-        }
-      });
-
-      const duplicates = allFunctions.filter((item, index) => allFunctions.indexOf(item) !== index);
-      const uniqueDuplicates = [...new Set(duplicates)];
-      
-      if (uniqueDuplicates.length > 0) {
-        results.push({ type: 'warning', text: `KONFLIK FUNGSI: Ditemukan fungsi ganda (${uniqueDuplicates.join(', ')})` });
-      } else {
-        results.push({ type: 'success', text: 'STRUKTUR FUNGSI: AMAN (TIDAK ADA DUPLIKASI)' });
-      }
-
-      if (!allGs.includes('function doGet')) {
-        results.push({ type: 'info', text: 'INFO: FUNGSI DOGET TIDAK DITEMUKAN (AKAN DIGENERATE OTOMATIS)' });
-      } else if (!allGs.includes('ALLOWALL') && !allGs.includes('XFrameOptionsMode')) {
-        results.push({ type: 'warning', text: 'PERINGATAN: DOGET ANDA BELUM DISET ALLOWALL' });
-      } else {
-        results.push({ type: 'success', text: 'DOGET ALLOWALL: TERKONFIGURASI' });
-      }
-
-      setAnalysisResult(results);
-      setIsAnalyzing(false);
-    }, 800);
   };
 
   const generateMerge = () => {
@@ -262,51 +219,6 @@ export function Merger() {
             </div>
           </div>
         ))}
-      </div>
-
-      {/* Diagnostics Panel */}
-      <div className="bg-gradient-to-br from-indigo-900/20 to-transparent border border-white/10 rounded-2xl p-6 mb-8 shadow-xl relative overflow-hidden">
-        <div className="absolute top-[-50%] left-[-10%] w-64 h-64 bg-indigo-500/10 rounded-full blur-[60px] pointer-events-none"></div>
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10">
-          <div className="flex items-center gap-3">
-            <Activity className="text-indigo-400 w-8 h-8" />
-            <div>
-              <h6 className="font-bold flex items-center gap-2 m-0 text-white uppercase tracking-widest text-xs">
-                Static Code Analyzer 
-                <span className="bg-white/10 text-white text-[9px] px-2 py-0.5 rounded border border-white/20">DIAGNOSTICS</span>
-              </h6>
-              <span className="text-[10px] text-indigo-300 tracking-widest uppercase mt-1 block">Cek potensi konflik variabel & struktur</span>
-            </div>
-          </div>
-          <button 
-            onClick={runDiagnostics}
-            disabled={isAnalyzing}
-            className="bg-white/10 border border-white/10 text-white hover:bg-indigo-500/20 hover:text-indigo-400 hover:border-indigo-500/30 px-4 py-2 rounded-lg text-[10px] font-bold tracking-widest uppercase transition-all disabled:opacity-50"
-          >
-            {isAnalyzing ? 'MENGANALISIS...' : 'RUN DIAGNOSTICS'}
-          </button>
-        </div>
-        
-        {analysisResult && (
-          <div className="mt-6 space-y-2 relative z-10">
-            {analysisResult.map((res, i) => (
-              <div 
-                key={i} 
-                className={`p-3 rounded-xl text-xs font-mono border flex items-start gap-3 animate-in fade-in duration-300 ${
-                  res.type === 'success' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 
-                  res.type === 'warning' ? 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20' : 
-                  'bg-blue-500/10 text-blue-400 border-blue-500/20'
-                }`}
-                style={{ animationDelay: `${i * 100}ms` }}
-              >
-                {res.type === 'success' && <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />}
-                {res.type === 'warning' && <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />}
-                {res.type === 'info' && <Terminal className="w-4 h-4 shrink-0 mt-0.5" />}
-                <span className="leading-relaxed">{res.text}</span>
-              </div>
-            ))}
-          </div>
-        )}
       </div>
 
       <div className="text-center mb-12">
