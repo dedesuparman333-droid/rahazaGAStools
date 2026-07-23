@@ -72,14 +72,15 @@ export function Merger() {
 
   const generateMerge = () => {
     let combinedGS = `/* Gabungan via GAS WebApp Merger */\n\n`;
-    let appsData: Record<string, { name: string, htmlB64: string }> = {};
+    let navHtml = '';
+    let templatesHtml = '';
+    let isFirst = true;
 
     modules.forEach(mod => {
       combinedGS += `// ===== MODUL: ${mod.name} =====\n${mod.gs}\n\n`;
-      appsData[mod.id] = {
-        name: mod.name,
-        htmlB64: base64EncodeSafe(mod.html || `<h1>${mod.name} (Kosong)</h1>`)
-      };
+      navHtml += `<li class="nav-item"><a class="nav-link ${isFirst ? 'active' : ''}" href="#" onclick="switchTab('${mod.id}', this)">${escapeHtml(mod.name)}</a></li>`;
+      templatesHtml += `\n  <template id="template-${mod.id}">\n    ${mod.html || `<h1>${mod.name} (Kosong)</h1>`}\n  </template>`;
+      isFirst = false;
     });
 
     if (!combinedGS.includes('function doGet')) {
@@ -92,17 +93,6 @@ export function Merger() {
       combinedGS += `\n// --- DEFAULT POST ENTRY POINT ---\nfunction doPost(e) {\n  return ContentService.createTextOutput(JSON.stringify({ status: "success", message: "Webapp active" }))\n    .setMimeType(ContentService.MimeType.JSON);\n}\n`;
     }
 
-    let navHtml = '';
-    let scriptMap = `const appsData = {`;
-    let isFirst = true;
-
-    for (const key in appsData) {
-      navHtml += `<li class="nav-item"><a class="nav-link ${isFirst ? 'active' : ''}" href="#" onclick="switchTab('${key}', this)">${escapeHtml(appsData[key].name)}</a></li>`;
-      scriptMap += `'${key}': '${appsData[key].htmlB64}',`;
-      isFirst = false;
-    }
-    scriptMap += `};\n`;
-
     const masterHTML = `<!DOCTYPE html>
 <html lang="id">
 <head>
@@ -114,14 +104,19 @@ export function Merger() {
 <body>
   <ul class="nav nav-pills mb-3" id="appTabs">${navHtml}</ul>
   <iframe id="sandboxFrame" class="sandbox-frame"></iframe>
+  
+  <!-- KODE HTML MASING-MASING MODUL (Bisa diedit manual jika perlu) -->${templatesHtml}
+
   <script>
-    ${scriptMap}
     function switchTab(id, el) {
       document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
       if(el) el.classList.add('active');
-      document.getElementById('sandboxFrame').srcdoc = decodeURIComponent(escape(atob(appsData[id])));
+      const tmpl = document.getElementById('template-' + id);
+      if(tmpl) {
+        document.getElementById('sandboxFrame').srcdoc = tmpl.innerHTML;
+      }
     }
-    window.onload = () => switchTab(Object.keys(appsData)[0], document.querySelector('.nav-link'));
+    window.onload = () => switchTab('${modules[0]?.id || ''}', document.querySelector('.nav-link'));
   </script>
 </body>
 </html>`;
