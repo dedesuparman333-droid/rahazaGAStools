@@ -181,32 +181,32 @@ export function PwaGenerator() {
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex items-center gap-3 mb-8">
-        <h3 className="text-xs font-bold tracking-widest text-gray-400 m-0 uppercase">PWA XML Generator</h3>
-        <span className="bg-white/10 text-white text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-[0.2em] border border-white/20">PRO</span>
+        <h3 className="text-xs font-bold tracking-widest text-gray-500 m-0 uppercase">PWA XML Generator</h3>
+        <span className="bg-blue-50 text-blue-600 text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-[0.2em] border border-blue-200">PRO</span>
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
         {/* Config Form */}
         <div className="xl:col-span-5 flex flex-col">
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-6 shadow-xl flex-grow">
-            <h6 className="text-xs font-bold tracking-[0.2em] border-b border-white/10 pb-4 mb-6 flex items-center gap-2 text-white uppercase">
-              <SlidersHorizontal className="text-blue-400 w-4 h-4" />
+          <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm flex-grow">
+            <h6 className="text-xs font-bold tracking-[0.2em] border-b border-gray-200 pb-4 mb-6 flex items-center gap-2 text-gray-900 uppercase">
+              <SlidersHorizontal className="text-blue-600 w-4 h-4" />
               Konfigurasi Aplikasi
             </h6>
 
             <div className="space-y-6">
               {/* URL */}
               <div>
-                <label className="block text-[10px] font-bold uppercase tracking-widest text-blue-400 mb-2">URL Google Apps Script (exec)</label>
+                <label className="block text-[10px] font-bold uppercase tracking-widest text-blue-600 mb-2">URL Google Apps Script (exec)</label>
                 <div className="flex items-center">
-                  <span className="bg-black/40 border border-white/10 border-r-0 px-3 py-2 rounded-l-lg text-gray-500">
+                  <span className="bg-gray-50 border border-gray-200 border-r-0 px-3 py-2 rounded-l-lg text-gray-500">
                     <LinkIcon className="w-4 h-4" />
                   </span>
                   <input 
                     type="url" 
                     value={config.url}
                     onChange={e => setConfig({...config, url: e.target.value})}
-                    className="flex-grow border border-white/10 bg-black/40 text-blue-300 px-3 py-2 rounded-r-lg focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 text-xs font-mono"
+                    className="flex-grow border border-gray-200 bg-gray-50 text-blue-800 px-3 py-2 rounded-r-lg focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 text-xs font-mono"
                     placeholder="https://script.google.com/.../exec"
                   />
                 </div>
@@ -215,40 +215,40 @@ export function PwaGenerator() {
               {/* Names */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-widest text-blue-400 mb-2">Nama Aplikasi</label>
+                  <label className="block text-[10px] font-bold uppercase tracking-widest text-blue-600 mb-2">Nama Aplikasi</label>
                   <input 
                     type="text" 
                     value={config.name}
                     onChange={e => setConfig({...config, name: e.target.value})}
-                    className="w-full border border-white/10 bg-black/40 text-white px-3 py-2 rounded-lg focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 text-xs"
+                    className="w-full border border-gray-200 bg-gray-50 text-gray-900 px-3 py-2 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 text-xs"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-widest text-blue-400 mb-2">Nama Pendek</label>
+                  <label className="block text-[10px] font-bold uppercase tracking-widest text-blue-600 mb-2">Nama Pendek</label>
                   <input 
                     type="text" 
                     value={config.shortName}
                     onChange={e => setConfig({...config, shortName: e.target.value})}
-                    className="w-full border border-white/10 bg-black/40 text-white px-3 py-2 rounded-lg focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 text-xs"
+                    className="w-full border border-gray-200 bg-gray-50 text-gray-900 px-3 py-2 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 text-xs"
                   />
                 </div>
               </div>
 
               {/* Description */}
               <div>
-                <label className="block text-[10px] font-bold uppercase tracking-widest text-blue-400 mb-2">Deskripsi Singkat</label>
+                <label className="block text-[10px] font-bold uppercase tracking-widest text-blue-600 mb-2">Deskripsi Singkat</label>
                 <input 
                   type="text" 
                   value={config.desc}
                   onChange={e => setConfig({...config, desc: e.target.value})}
-                  className="w-full border border-white/10 bg-black/40 text-white px-3 py-2 rounded-lg focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 text-xs"
+                  className="w-full border border-gray-200 bg-gray-50 text-gray-900 px-3 py-2 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 text-xs"
                 />
               </div>
 
               {/* Colors */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-widest text-blue-400 mb-2">Theme Color</label>
+                  <label className="block text-[10px] font-bold uppercase tracking-widest text-blue-600 mb-2">Theme Color</label>
                   <div className="flex items-center gap-3">
                     <input 
                       type="color" 
@@ -256,11 +256,11 @@ export function PwaGenerator() {
                       onChange={e => setConfig({...config, themeColor: e.target.value})}
                       className="w-10 h-8 p-0 border-0 rounded cursor-pointer bg-transparent"
                     />
-                    <span className="font-mono text-xs text-blue-300 uppercase">{config.themeColor}</span>
+                    <span className="font-mono text-xs text-gray-700 uppercase">{config.themeColor}</span>
                   </div>
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-widest text-blue-400 mb-2">Bg Color</label>
+                  <label className="block text-[10px] font-bold uppercase tracking-widest text-blue-600 mb-2">Bg Color</label>
                   <div className="flex items-center gap-3">
                     <input 
                       type="color" 
@@ -268,56 +268,56 @@ export function PwaGenerator() {
                       onChange={e => setConfig({...config, bgColor: e.target.value})}
                       className="w-10 h-8 p-0 border-0 rounded cursor-pointer bg-transparent"
                     />
-                    <span className="font-mono text-xs text-blue-300 uppercase">{config.bgColor}</span>
+                    <span className="font-mono text-xs text-gray-700 uppercase">{config.bgColor}</span>
                   </div>
                 </div>
               </div>
 
               {/* Icon Source */}
-              <div className="bg-white/5 p-4 rounded-xl border border-white/10">
-                <label className="block text-[10px] font-bold uppercase tracking-widest text-indigo-400 mb-3">Sumber Ikon PWA</label>
+              <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                <label className="block text-[10px] font-bold uppercase tracking-widest text-indigo-600 mb-3">Sumber Ikon PWA</label>
                 <div className="space-y-3">
                   <label className="flex items-center gap-3 cursor-pointer group">
-                    <input type="radio" name="iconType" value="url" checked={config.iconType === 'url'} onChange={() => setConfig({...config, iconType: 'url'})} className="w-3 h-3 text-blue-500 bg-black/40 border-white/20 focus:ring-blue-500/50" />
-                    <span className="text-xs text-gray-300 group-hover:text-white transition-colors">URL Gambar <span className="bg-blue-500/20 text-blue-400 border border-blue-500/30 text-[9px] ml-2 px-2 py-0.5 rounded tracking-widest uppercase">Ringan</span></span>
+                    <input type="radio" name="iconType" value="url" checked={config.iconType === 'url'} onChange={() => setConfig({...config, iconType: 'url'})} className="w-3 h-3 text-blue-600 bg-white border-gray-300 focus:ring-blue-500" />
+                    <span className="text-xs text-gray-700 group-hover:text-gray-900 transition-colors">URL Gambar <span className="bg-blue-50 text-blue-600 border border-blue-200 text-[9px] ml-2 px-2 py-0.5 rounded tracking-widest uppercase">Ringan</span></span>
                   </label>
                   <label className="flex items-center gap-3 cursor-pointer group">
-                    <input type="radio" name="iconType" value="text" checked={config.iconType === 'text'} onChange={() => setConfig({...config, iconType: 'text'})} className="w-3 h-3 text-blue-500 bg-black/40 border-white/20 focus:ring-blue-500/50" />
-                    <span className="text-xs text-gray-300 group-hover:text-white transition-colors">Inisial Teks (SVG)</span>
+                    <input type="radio" name="iconType" value="text" checked={config.iconType === 'text'} onChange={() => setConfig({...config, iconType: 'text'})} className="w-3 h-3 text-blue-600 bg-white border-gray-300 focus:ring-blue-500" />
+                    <span className="text-xs text-gray-700 group-hover:text-gray-900 transition-colors">Inisial Teks (SVG)</span>
                   </label>
                   <label className="flex items-center gap-3 cursor-pointer group">
-                    <input type="radio" name="iconType" value="image" checked={config.iconType === 'image'} onChange={() => setConfig({...config, iconType: 'image'})} className="w-3 h-3 text-blue-500 bg-black/40 border-white/20 focus:ring-blue-500/50" />
-                    <span className="text-xs text-gray-300 group-hover:text-white transition-colors">Upload Lokal <span className="bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 text-[9px] ml-2 px-2 py-0.5 rounded tracking-widest uppercase">Auto-WebP</span></span>
+                    <input type="radio" name="iconType" value="image" checked={config.iconType === 'image'} onChange={() => setConfig({...config, iconType: 'image'})} className="w-3 h-3 text-blue-600 bg-white border-gray-300 focus:ring-blue-500" />
+                    <span className="text-xs text-gray-700 group-hover:text-gray-900 transition-colors">Upload Lokal <span className="bg-indigo-50 text-indigo-600 border border-indigo-200 text-[9px] ml-2 px-2 py-0.5 rounded tracking-widest uppercase">Auto-WebP</span></span>
                   </label>
                 </div>
 
-                <div className="mt-4 pt-4 border-t border-white/10">
+                <div className="mt-4 pt-4 border-t border-gray-200">
                   {config.iconType === 'url' && (
                     <div>
-                      <label className="block text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-2">Link URL Gambar (PNG/JPG/WEBP)</label>
-                      <input type="url" value={config.iconUrl} onChange={e => setConfig({...config, iconUrl: e.target.value})} className="w-full border border-white/10 bg-black/40 text-blue-300 px-3 py-2 rounded-lg text-xs font-mono focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50" placeholder="https://example.com/logo.png" />
+                      <label className="block text-[10px] font-bold uppercase tracking-widest text-gray-600 mb-2">Link URL Gambar (PNG/JPG/WEBP)</label>
+                      <input type="url" value={config.iconUrl} onChange={e => setConfig({...config, iconUrl: e.target.value})} className="w-full border border-gray-200 bg-white text-blue-800 px-3 py-2 rounded-lg text-xs font-mono focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400" placeholder="https://example.com/logo.png" />
                     </div>
                   )}
                   {config.iconType === 'text' && (
                     <div>
-                      <label className="block text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-2">Inisial Teks (Maks 2)</label>
-                      <input type="text" maxLength={2} value={config.iconText} onChange={e => setConfig({...config, iconText: e.target.value})} className="w-16 text-center font-bold text-lg border border-white/10 bg-black/40 text-white px-3 py-2 rounded-lg focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50" />
+                      <label className="block text-[10px] font-bold uppercase tracking-widest text-gray-600 mb-2">Inisial Teks (Maks 2)</label>
+                      <input type="text" maxLength={2} value={config.iconText} onChange={e => setConfig({...config, iconText: e.target.value})} className="w-16 text-center font-bold text-lg border border-gray-200 bg-white text-gray-900 px-3 py-2 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400" />
                     </div>
                   )}
                   {config.iconType === 'image' && (
                     <div>
-                      <label className="block text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-2">Upload Logo (Auto-resize to 192 & 512)</label>
-                      <input type="file" accept="image/png, image/jpeg, image/webp" onChange={handleFileUpload} className="w-full text-[10px] file:mr-4 file:py-2 file:px-4 file:rounded file:border file:border-white/10 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-white/10 file:text-white hover:file:bg-white/20 transition-all text-gray-400" />
+                      <label className="block text-[10px] font-bold uppercase tracking-widest text-gray-600 mb-2">Upload Logo (Auto-resize to 192 & 512)</label>
+                      <input type="file" accept="image/png, image/jpeg, image/webp" onChange={handleFileUpload} className="w-full text-[10px] file:mr-4 file:py-2 file:px-4 file:rounded file:border file:border-gray-200 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 transition-all text-gray-600" />
                     </div>
                   )}
                 </div>
               </div>
 
               {/* Preview */}
-              <div className="flex items-center justify-between p-4 bg-black/40 rounded-xl border border-dashed border-white/20">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Preview Ikon:</span>
+              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-dashed border-gray-300">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-gray-500">Preview Ikon:</span>
                 <div 
-                  className="w-16 h-16 rounded-2xl flex items-center justify-center overflow-hidden shadow-[0_0_15px_rgba(255,255,255,0.05)] transition-colors duration-300"
+                  className="w-16 h-16 rounded-2xl flex items-center justify-center overflow-hidden shadow-sm transition-colors duration-300"
                   style={{ backgroundColor: config.bgColor, color: config.themeColor }}
                 >
                   {(config.iconType === 'text' || (config.iconType === 'url' && !config.iconUrl) || (config.iconType === 'image' && !config.icon192Src)) ? (
@@ -335,10 +335,10 @@ export function PwaGenerator() {
                 <div className="pt-2">
                   <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-3">Download Aset (Hasil Resize):</p>
                   <div className="flex gap-3">
-                    <button onClick={() => downloadIconAsset(192)} className="flex-1 flex items-center justify-center gap-2 border border-white/10 hover:bg-white/10 text-white py-2 rounded-lg text-[10px] font-bold tracking-widest uppercase transition-colors">
+                    <button onClick={() => downloadIconAsset(192)} className="flex-1 flex items-center justify-center gap-2 border border-gray-200 hover:bg-gray-100 text-gray-700 py-2 rounded-lg text-[10px] font-bold tracking-widest uppercase transition-colors">
                       <Download className="w-3 h-3" /> 192x192
                     </button>
-                    <button onClick={() => downloadIconAsset(512)} className="flex-1 flex items-center justify-center gap-2 border border-white/10 hover:bg-white/10 text-white py-2 rounded-lg text-[10px] font-bold tracking-widest uppercase transition-colors">
+                    <button onClick={() => downloadIconAsset(512)} className="flex-1 flex items-center justify-center gap-2 border border-gray-200 hover:bg-gray-100 text-gray-700 py-2 rounded-lg text-[10px] font-bold tracking-widest uppercase transition-colors">
                       <Download className="w-3 h-3" /> 512x512
                     </button>
                   </div>
@@ -351,29 +351,29 @@ export function PwaGenerator() {
 
         {/* Output */}
         <div className="xl:col-span-7 flex flex-col h-full min-h-[600px]">
-          <div className="bg-white/5 border border-white/10 rounded-2xl shadow-xl flex flex-col h-full overflow-hidden relative">
-            <div className="absolute top-0 right-0 w-48 h-48 bg-blue-500/10 rounded-full blur-[60px] pointer-events-none"></div>
-            <div className="flex justify-between items-center p-4 border-b border-white/10 bg-black/40 relative z-10">
+          <div className="bg-white border border-gray-200 rounded-2xl shadow-sm flex flex-col h-full overflow-hidden relative">
+            <div className="absolute top-0 right-0 w-48 h-48 bg-blue-50 rounded-full blur-[60px] pointer-events-none"></div>
+            <div className="flex justify-between items-center p-4 border-b border-gray-200 bg-gray-50 relative z-10">
               <div className="flex items-center gap-3">
-                <Code className="w-4 h-4 text-blue-400" />
-                <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-white">Hasil XML Blogger</span>
-                <span className={`text-[9px] font-bold px-2 py-0.5 rounded border tracking-widest uppercase ${parseFloat(kbSize) > 100 ? 'bg-red-500/20 text-red-400 border-red-500/30' : parseFloat(kbSize) > 30 ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' : 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'}`}>
+                <Code className="w-4 h-4 text-blue-600" />
+                <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-900">Hasil XML Blogger</span>
+                <span className={`text-[9px] font-bold px-2 py-0.5 rounded border tracking-widest uppercase ${parseFloat(kbSize) > 100 ? 'bg-red-50 text-red-600 border-red-200' : parseFloat(kbSize) > 30 ? 'bg-yellow-50 text-yellow-600 border-yellow-200' : 'bg-emerald-50 text-emerald-600 border-emerald-200'}`}>
                   {kbSize} KB
                 </span>
               </div>
               <div className="flex gap-2">
-                <button onClick={handleCopy} className={`flex items-center gap-1.5 px-3 py-1.5 rounded border text-[10px] font-bold tracking-widest uppercase transition-colors ${copied ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-white/10 border-white/10 text-white hover:bg-white/20'}`}>
+                <button onClick={handleCopy} className={`flex items-center gap-1.5 px-3 py-1.5 rounded border text-[10px] font-bold tracking-widest uppercase transition-colors ${copied ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'}`}>
                   {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                   {copied ? 'COPIED' : 'COPY'}
                 </button>
-                <button onClick={downloadXML} className="flex items-center gap-1.5 px-3 py-1.5 rounded border border-blue-500/30 bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 text-[10px] font-bold tracking-widest uppercase transition-colors">
+                <button onClick={downloadXML} className="flex items-center gap-1.5 px-3 py-1.5 rounded border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-600 text-[10px] font-bold tracking-widest uppercase transition-colors">
                   <Download className="w-3 h-3" />
                   DOWNLOAD
                 </button>
               </div>
             </div>
             <textarea 
-              className="flex-grow w-full bg-black/60 text-indigo-300 p-6 font-mono text-[11px] leading-relaxed border-0 focus:outline-none focus:ring-0 resize-none relative z-10"
+              className="flex-grow w-full bg-gray-50 text-indigo-800 p-6 font-mono text-[11px] leading-relaxed border-0 focus:outline-none focus:ring-0 resize-none relative z-10"
               readOnly
               value={xmlOutput}
               placeholder="Generate XML akan muncul di sini..."

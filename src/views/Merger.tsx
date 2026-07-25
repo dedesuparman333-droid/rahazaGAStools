@@ -168,6 +168,7 @@ export function Merger() {
   const [showTemplates, setShowTemplates] = useState(false);
   const [spreadsheetId, setSpreadsheetId] = useState('');
   const [validationError, setValidationError] = useState('');
+  const [theme, setTheme] = useState<'default' | 'neubrutalism'>('default');
 
   const validateSpreadsheetId = (id: string) => {
     if (!id.trim()) {
@@ -228,8 +229,8 @@ export function Merger() {
       combinedGS += `// ===== MODUL: ${mod.name} =====\n${mod.gs}\n\n`;
       navHtml += `<a class="nav-item-btn ${isFirst ? 'active' : ''}" href="#" onclick="switchTab('${mod.id}', this, event, '${escapeHtml(mod.name)}')"><i class="bi bi-app-indicator"></i> <span>${escapeHtml(mod.name)}</span></a>`;
       
-      const unifiedTheme = `
-    <!-- INJECTED UNIFIED THEME -->
+      const defaultTheme = `
+    <!-- INJECTED DEFAULT THEME -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
       body { font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: transparent; color: #1f2937; padding: 20px; margin: 0; }
@@ -240,6 +241,24 @@ export function Merger() {
     </style>
     <!-- END INJECTED THEME -->
 `;
+
+      const neubrutalismTheme = `
+    <!-- INJECTED NEUBRUTALISM THEME -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+      body { font-family: 'Space Grotesk', 'Segoe UI', Tahoma, sans-serif; background-color: transparent; color: #000; padding: 20px; margin: 0; }
+      .card { border: 2px solid #000; box-shadow: 4px 4px 0px #000; border-radius: 0; background: #fff; }
+      .btn-primary { background-color: #ffde59; color: #000; border: 2px solid #000; box-shadow: 4px 4px 0px #000; font-weight: bold; border-radius: 0; transition: all 0.2s; }
+      .btn-primary:hover { background-color: #fce074; color: #000; transform: translate(2px, 2px); box-shadow: 2px 2px 0px #000; }
+      .form-control, .form-select { border: 2px solid #000; border-radius: 0; box-shadow: 2px 2px 0px #000; transition: all 0.2s; }
+      .form-control:focus, .form-select:focus { box-shadow: 4px 4px 0px #000; outline: none; }
+      table { font-size: 0.95rem; border: 2px solid #000; }
+      th, td { border: 1px solid #000 !important; }
+    </style>
+    <!-- END INJECTED THEME -->
+`;
+      const unifiedTheme = theme === 'neubrutalism' ? neubrutalismTheme : defaultTheme;
+
       let finalHtml = mod.html || `<h1>${mod.name} (Kosong)</h1>`;
       if (!finalHtml.includes('bootstrap.min.css')) {
           if (finalHtml.includes('<head>')) {
@@ -263,16 +282,7 @@ export function Merger() {
       combinedGS += `\n// --- DEFAULT POST ENTRY POINT ---\nfunction doPost(e) {\n  return ContentService.createTextOutput(JSON.stringify({ status: "success", message: "Webapp active" }))\n    .setMimeType(ContentService.MimeType.JSON);\n}\n`;
     }
 
-    const masterHTML = `<!DOCTYPE html>
-<html lang="id">
-<head>
-  <base target="_top">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>App Workspace</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-  <style>
+    const defaultMasterCSS = `
     :root { --primary: #2563eb; --bg: #f8fafc; --surface: #ffffff; --border: #e2e8f0; }
     body { background: var(--bg); font-family: 'Inter', system-ui, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
     
@@ -289,6 +299,40 @@ export function Merger() {
     
     .main-workspace { flex: 1; position: relative; overflow: hidden; background: var(--bg); display: flex; flex-direction: column; }
     .sandbox-frame { width: 100%; height: 100%; border: none; display: block; flex: 1; }
+`;
+
+    const neubrutalismMasterCSS = `
+    :root { --primary: #ffde59; --bg: #f4f4f0; --surface: #ffffff; --border: #000000; }
+    body { background: var(--bg); font-family: 'Space Grotesk', system-ui, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+    
+    .app-header { background: var(--surface); border-bottom: 2px solid var(--border); padding: 0 1rem; display: flex; align-items: center; justify-content: space-between; height: 60px; z-index: 10; flex-shrink: 0; }
+    .brand { font-size: 1.125rem; font-weight: 800; color: #000; display: flex; align-items: center; gap: 0.5rem; text-transform: uppercase; }
+    .brand i { color: #000; font-size: 1.25rem; }
+    .brand-title { color: #000; font-size: 0.9rem; font-weight: 600; margin-left: 0.5rem; border-left: 2px solid #000; padding-left: 0.75rem; text-transform: uppercase; }
+    
+    .nav-container { display: flex; gap: 0.5rem; overflow-x: auto; padding: 0.75rem 1rem; background: var(--surface); border-bottom: 2px solid var(--border); scrollbar-width: none; }
+    .nav-container::-webkit-scrollbar { display: none; }
+    .nav-item-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 0; font-size: 0.875rem; font-weight: 700; color: #000; border: 2px solid transparent; background: transparent; cursor: pointer; transition: all 0.2s; white-space: nowrap; text-decoration: none; text-transform: uppercase; }
+    .nav-item-btn:hover { background: #e0e0e0; border: 2px solid #000; }
+    .nav-item-btn.active { background: var(--primary); color: #000; border: 2px solid #000; box-shadow: 2px 2px 0px #000; transform: translate(-2px, -2px); }
+    
+    .main-workspace { flex: 1; position: relative; overflow: hidden; background: var(--bg); display: flex; flex-direction: column; }
+    .sandbox-frame { width: 100%; height: 100%; border: none; display: block; flex: 1; }
+`;
+
+    const masterCSS = theme === 'neubrutalism' ? neubrutalismMasterCSS : defaultMasterCSS;
+
+    const masterHTML = `<!DOCTYPE html>
+<html lang="id">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>App Workspace</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+${masterCSS}
   </style>
 </head>
 <body>
@@ -350,14 +394,14 @@ export function Merger() {
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h3 className="text-xs font-bold tracking-widest text-gray-400 m-0 uppercase">GAS WebApp Merger</h3>
-          <p className="text-gray-500 text-[10px] uppercase tracking-widest mt-1">Sistem Penggabungan Modul</p>
+          <h3 className="text-xs font-bold tracking-widest text-gray-500 m-0 uppercase">Rahaza Digital Merger</h3>
+          <p className="text-gray-600 text-[10px] uppercase tracking-widest mt-1">Sistem Penggabungan Modul</p>
         </div>
         <div className="flex items-center gap-3 relative">
           <div className="relative">
             <button 
               onClick={() => setShowTemplates(!showTemplates)}
-              className="flex items-center gap-2 bg-indigo-500/10 border border-indigo-500/50 text-indigo-400 hover:bg-indigo-500/20 px-4 py-2 rounded-lg text-xs font-bold tracking-widest uppercase transition-colors"
+              className="flex items-center gap-2 bg-indigo-50 border border-indigo-200 text-indigo-600 hover:bg-indigo-100 px-4 py-2 rounded-lg text-xs font-bold tracking-widest uppercase transition-colors"
             >
               <ListPlus className="w-4 h-4" />
               <span className="hidden sm:inline">Templates</span>
@@ -365,18 +409,18 @@ export function Merger() {
             </button>
             
             {showTemplates && (
-              <div className="absolute top-full right-0 mt-2 w-56 bg-[#1a1b26] border border-white/10 rounded-xl shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2">
-                <div className="p-2 border-b border-white/5 bg-black/20">
-                  <span className="text-[10px] uppercase tracking-widest text-gray-500 font-bold px-2">Pilih Template</span>
+              <div className="absolute top-full right-0 mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2">
+                <div className="p-2 border-b border-gray-100 bg-gray-50">
+                  <span className="text-[10px] uppercase tracking-widest text-gray-600 font-bold px-2">Pilih Template</span>
                 </div>
                 <div className="p-1">
                   {BOILERPLATES.map((tmpl, idx) => (
                     <button
                       key={idx}
                       onClick={() => addTemplate(tmpl)}
-                      className="w-full text-left px-3 py-2.5 text-sm text-gray-300 hover:bg-white/5 hover:text-white rounded-lg transition-colors flex items-center gap-2"
+                      className="w-full text-left px-3 py-2.5 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-lg transition-colors flex items-center gap-2"
                     >
-                      <FileCode className="w-4 h-4 text-indigo-400" />
+                      <FileCode className="w-4 h-4 text-indigo-500" />
                       {tmpl.name}
                     </button>
                   ))}
@@ -387,7 +431,7 @@ export function Merger() {
           
           <button 
             onClick={addModule}
-            className="flex items-center gap-2 border border-blue-500/50 text-blue-400 hover:bg-blue-500/10 px-4 py-2 rounded-lg text-xs font-bold tracking-widest uppercase transition-colors"
+            className="flex items-center gap-2 bg-blue-50 border border-blue-200 text-blue-600 hover:bg-blue-100 px-4 py-2 rounded-lg text-xs font-bold tracking-widest uppercase transition-colors"
           >
             <Plus className="w-4 h-4" />
             <span className="hidden sm:inline">Tambah Modul</span>
@@ -395,35 +439,54 @@ export function Merger() {
         </div>
       </div>
 
-      <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-6">
-        <h4 className="font-bold text-white mb-4 text-sm flex items-center gap-2">
+      <div className="bg-white border border-gray-200 rounded-2xl p-5 mb-6 shadow-sm">
+        <h4 className="font-bold text-gray-900 mb-4 text-sm flex items-center gap-2">
           Global Settings
         </h4>
-        <div className="flex flex-col gap-2">
-          <label className="text-xs text-gray-400">
-            Global Spreadsheet ID (Opsional)
-          </label>
-          <input 
-            type="text" 
-            placeholder="Contoh: 1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms"
-            value={spreadsheetId}
-            onChange={handleSpreadsheetIdChange}
-            className={`bg-black/40 border ${validationError ? 'border-red-500/50 focus:border-red-500' : 'border-white/10 focus:border-blue-500/50'} text-white p-3 rounded-lg text-sm w-full focus:outline-none transition-colors`}
-          />
-          {validationError && (
-            <p className="text-red-400 text-xs mt-1">{validationError}</p>
-          )}
-          <p className="text-gray-500 text-[10px] mt-1">
-            Jika diisi, konstanta <code>GLOBAL_SPREADSHEET_ID</code> akan ditambahkan ke bagian atas kode <code>Code.gs</code> untuk dipakai semua modul.
-          </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex flex-col gap-2">
+            <label className="text-xs text-gray-600">
+              Global Spreadsheet ID (Opsional)
+            </label>
+            <input 
+              type="text" 
+              placeholder="Contoh: 1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms"
+              value={spreadsheetId}
+              onChange={handleSpreadsheetIdChange}
+              className={`bg-gray-50 border ${validationError ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-blue-400'} text-gray-900 p-3 rounded-lg text-sm w-full focus:outline-none transition-colors`}
+            />
+            {validationError && (
+              <p className="text-red-500 text-xs mt-1">{validationError}</p>
+            )}
+            <p className="text-gray-500 text-[10px] mt-1">
+              Jika diisi, konstanta <code>GLOBAL_SPREADSHEET_ID</code> akan ditambahkan ke <code>Code.gs</code>.
+            </p>
+          </div>
+          
+          <div className="flex flex-col gap-2">
+            <label className="text-xs text-gray-600">
+              Tema Tampilan WebApp
+            </label>
+            <select
+              value={theme}
+              onChange={(e) => setTheme(e.target.value as 'default' | 'neubrutalism')}
+              className="bg-gray-50 border border-gray-200 focus:border-blue-400 text-gray-900 p-3 rounded-lg text-sm w-full focus:outline-none transition-colors appearance-none"
+            >
+              <option value="default">Default Modern (Clean)</option>
+              <option value="neubrutalism">Neubrutalism (Bold & High Contrast)</option>
+            </select>
+            <p className="text-gray-500 text-[10px] mt-1">
+              Pilih gaya visual untuk halaman utama (Dashboard) dari WebApp gabungan Anda.
+            </p>
+          </div>
         </div>
       </div>
 
-      <div className="bg-blue-500/10 border border-blue-500/20 rounded-2xl p-5 mb-6 text-blue-200 text-sm leading-relaxed">
-        <h4 className="font-bold text-blue-400 mb-2 flex items-center gap-2">
+      <div className="bg-blue-50 border border-blue-100 rounded-2xl p-5 mb-6 text-blue-800 text-sm leading-relaxed shadow-sm">
+        <h4 className="font-bold text-blue-700 mb-2 flex items-center gap-2">
           <Monitor className="w-4 h-4" /> Tips Penggabungan (Wajib Dilakukan Manual oleh User)
         </h4>
-        <ul className="list-disc pl-5 space-y-2 opacity-90 text-xs">
+        <ul className="list-disc pl-5 space-y-2 text-xs text-blue-700/90">
           <li><strong>Konflik Variabel Global:</strong> Tools ini tidak mengganti nama variabel Anda secara otomatis. Jika menggunakan Spreadsheet ID (<code>var SPREADSHEET_ID = "..."</code>), <strong>Anda harus menggantinya secara manual</strong> (misal <code>ID_MODUL_A</code> dan <code>ID_MODUL_B</code>) pada kode sebelum/sesudah digabung agar tidak bentrok.</li>
           <li><strong>Konflik Nama Fungsi:</strong> <code>google.script.run</code> hanya memanggil fungsi global. <strong>Ubah nama fungsi</strong> secara manual jika ada nama fungsi yang sama (misal <code>simpanData()</code>) di kedua modul. Jangan lupa update juga pemanggilannya di kode HTML!</li>
           <li><strong>Otorisasi Akses:</strong> Setelah kode digabungkan dan di-paste ke Google Apps Script, <strong>Anda wajib menekan tombol "Run"</strong> pada salah satu fungsi secara manual di editor GAS. Ini untuk memicu jendela popup konfirmasi izin akses ke Spreadsheet Anda.</li>
@@ -432,29 +495,29 @@ export function Merger() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {modules.map((mod, index) => (
-          <div key={mod.id} className="bg-white/5 border border-white/10 rounded-2xl p-5 shadow-xl">
+          <div key={mod.id} className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
             <div className="flex justify-between items-center mb-4">
               <input 
                 type="text" 
-                className="bg-transparent border-b border-transparent hover:border-white/20 font-bold text-lg text-white focus:outline-none focus:border-blue-500/50 focus:ring-0 p-1 w-full transition-colors rounded-t" 
+                className="bg-transparent border-b border-transparent hover:border-gray-300 font-bold text-lg text-gray-900 focus:outline-none focus:border-blue-400 focus:ring-0 p-1 w-full transition-colors rounded-t" 
                 value={mod.name} 
                 onChange={(e) => updateModule(mod.id, 'name', e.target.value)}
                 placeholder="Nama Modul"
                 title="Klik untuk mengubah nama modul"
               />
               {modules.length > 1 && (
-                <button onClick={() => removeModule(mod.id)} className="text-red-400 hover:bg-red-500/20 p-2 rounded-lg transition-colors">
+                <button onClick={() => removeModule(mod.id)} className="text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors">
                   <Trash2 className="w-4 h-4" />
                 </button>
               )}
             </div>
             
             <div className="mb-4">
-              <label className="text-[10px] font-bold text-blue-400 flex items-center gap-2 mb-2 uppercase tracking-widest">
+              <label className="text-[10px] font-bold text-blue-600 flex items-center gap-2 mb-2 uppercase tracking-widest">
                 <FileCode2 className="w-3 h-3" /> Code.gs
               </label>
               <textarea 
-                className="w-full bg-black/40 text-blue-300 p-3 rounded-lg font-mono text-xs border border-white/10 focus:border-blue-500/50 focus:outline-none focus:ring-1 focus:ring-blue-500/50 h-32 resize-none"
+                className="w-full bg-gray-50 text-blue-800 p-3 rounded-lg font-mono text-xs border border-gray-200 focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400 h-32 resize-none"
                 placeholder="// Fungsi server..."
                 value={mod.gs}
                 onChange={(e) => updateModule(mod.id, 'gs', e.target.value)}
@@ -462,11 +525,11 @@ export function Merger() {
             </div>
             
             <div>
-              <label className="text-[10px] font-bold text-indigo-400 flex items-center gap-2 mb-2 uppercase tracking-widest">
+              <label className="text-[10px] font-bold text-indigo-600 flex items-center gap-2 mb-2 uppercase tracking-widest">
                 <FileCode className="w-3 h-3" /> index.html
               </label>
               <textarea 
-                className="w-full bg-black/40 text-indigo-300 p-3 rounded-lg font-mono text-xs border border-white/10 focus:border-indigo-500/50 focus:outline-none focus:ring-1 focus:ring-indigo-500/50 h-32 resize-none"
+                className="w-full bg-gray-50 text-indigo-800 p-3 rounded-lg font-mono text-xs border border-gray-200 focus:border-indigo-400 focus:outline-none focus:ring-1 focus:ring-indigo-400 h-32 resize-none"
                 placeholder="<h1>Ini Modul</h1>"
                 value={mod.html}
                 onChange={(e) => updateModule(mod.id, 'html', e.target.value)}
@@ -479,7 +542,7 @@ export function Merger() {
       <div className="text-center mb-12">
         <button 
           onClick={generateMerge}
-          className="bg-white text-black px-8 py-4 rounded-xl font-bold text-xs tracking-[0.2em] shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_25px_rgba(96,165,250,0.4)] hover:bg-blue-400 hover:text-white transition-all flex items-center gap-3 mx-auto uppercase"
+          className="bg-blue-600 text-white px-8 py-4 rounded-xl font-bold text-xs tracking-[0.2em] shadow-[0_4px_14px_0_rgba(37,99,235,0.39)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.23)] hover:bg-blue-700 transition-all flex items-center gap-3 mx-auto uppercase"
         >
           <Wand2 className="w-5 h-5" />
           Execute Mainframe Sync
@@ -489,56 +552,56 @@ export function Merger() {
       {/* Output Area */}
       {showOutput && (
         <div id="merger-output" className="animate-in fade-in slide-in-from-bottom-8 duration-700">
-          <div className="w-full h-px bg-white/10 my-8" />
-          <h4 className="font-bold text-center mb-8 text-blue-400 text-sm tracking-[0.2em] uppercase flex items-center justify-center gap-2">
+          <div className="w-full h-px bg-gray-200 my-8" />
+          <h4 className="font-bold text-center mb-8 text-blue-600 text-sm tracking-[0.2em] uppercase flex items-center justify-center gap-2">
             SYSTEM SYNC SUCCESSFUL
           </h4>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-white/5 border border-white/10 rounded-2xl shadow-xl overflow-hidden flex flex-col">
-              <div className="flex justify-between items-center p-3 px-4 border-b border-white/10 bg-black/40">
-                <span className="font-bold text-[10px] text-blue-400 flex items-center gap-2 uppercase tracking-widest">
+            <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden flex flex-col">
+              <div className="flex justify-between items-center p-3 px-4 border-b border-gray-200 bg-gray-50">
+                <span className="font-bold text-[10px] text-blue-600 flex items-center gap-2 uppercase tracking-widest">
                   <FileCode2 className="w-3 h-3" /> Code.gs
                 </span>
                 <button 
                   onClick={() => copyCode(outGs, 'gs')}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded border border-white/10 text-[10px] font-bold tracking-widest uppercase transition-colors ${copiedId === 'gs' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-white/10 hover:bg-white/20 text-white'}`}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded border text-[10px] font-bold tracking-widest uppercase transition-colors ${copiedId === 'gs' ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : 'bg-white hover:bg-gray-50 border-gray-200 text-gray-700'}`}
                 >
                   {copiedId === 'gs' ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                   {copiedId === 'gs' ? 'COPIED' : 'COPY'}
                 </button>
               </div>
               <textarea 
-                className="w-full h-96 bg-black/60 text-blue-300 p-4 font-mono text-xs border-0 focus:outline-none focus:ring-0 resize-none"
+                className="w-full h-96 bg-gray-50 text-blue-800 p-4 font-mono text-xs border-0 focus:outline-none focus:ring-0 resize-none"
                 value={outGs}
                 onChange={(e) => setOutGs(e.target.value)}
               />
             </div>
 
-            <div className="bg-white/5 border border-white/10 rounded-2xl shadow-xl overflow-hidden flex flex-col">
-              <div className="flex justify-between items-center p-3 px-4 border-b border-white/10 bg-black/40">
-                <span className="font-bold text-[10px] text-indigo-400 flex items-center gap-2 uppercase tracking-widest">
+            <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden flex flex-col">
+              <div className="flex justify-between items-center p-3 px-4 border-b border-gray-200 bg-gray-50">
+                <span className="font-bold text-[10px] text-indigo-600 flex items-center gap-2 uppercase tracking-widest">
                   <FileCode className="w-3 h-3" /> index.html
                 </span>
                 <button 
                   onClick={() => copyCode(outHtml, 'html')}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded border border-white/10 text-[10px] font-bold tracking-widest uppercase transition-colors ${copiedId === 'html' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-white/10 hover:bg-white/20 text-white'}`}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded border text-[10px] font-bold tracking-widest uppercase transition-colors ${copiedId === 'html' ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : 'bg-white hover:bg-gray-50 border-gray-200 text-gray-700'}`}
                 >
                   {copiedId === 'html' ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                   {copiedId === 'html' ? 'COPIED' : 'COPY'}
                 </button>
               </div>
               <textarea 
-                className="w-full h-96 bg-black/60 text-indigo-300 p-4 font-mono text-xs border-0 focus:outline-none focus:ring-0 resize-none"
+                className="w-full h-96 bg-gray-50 text-indigo-800 p-4 font-mono text-xs border-0 focus:outline-none focus:ring-0 resize-none"
                 value={outHtml}
                 onChange={(e) => setOutHtml(e.target.value)}
               />
             </div>
           </div>
 
-          <div className="mt-6 bg-white/5 border border-white/10 rounded-2xl shadow-xl overflow-hidden flex flex-col">
-            <div className="flex justify-between items-center p-3 px-4 border-b border-white/10 bg-black/40">
-              <span className="font-bold text-[10px] text-gray-300 flex items-center gap-2 uppercase tracking-widest">
+          <div className="mt-6 bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden flex flex-col">
+            <div className="flex justify-between items-center p-3 px-4 border-b border-gray-200 bg-gray-50">
+              <span className="font-bold text-[10px] text-gray-600 flex items-center gap-2 uppercase tracking-widest">
                 <Monitor className="w-3 h-3" /> Live Preview
               </span>
             </div>

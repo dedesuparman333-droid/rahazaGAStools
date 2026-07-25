@@ -9,23 +9,23 @@ interface DashboardProps {
 export function Dashboard({ setView }: DashboardProps) {
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <h3 className="text-xs font-bold tracking-widest text-gray-400 mb-6 uppercase">Dashboard Workspace</h3>
+      <h3 className="text-xs font-bold tracking-widest text-gray-500 mb-6 uppercase">Dashboard Workspace</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         
         {/* Merger Card */}
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-6 flex flex-col h-full relative overflow-hidden shadow-xl">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-[50px] pointer-events-none"></div>
-          <h5 className="text-xs font-bold tracking-widest text-white mb-4 flex items-center gap-2 uppercase">
-            <Puzzle className="text-blue-400 w-5 h-5" />
-            GAS WebApp Merger
+        <div className="bg-white border border-gray-200 rounded-2xl p-6 flex flex-col h-full relative overflow-hidden shadow-sm">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full blur-[50px] pointer-events-none"></div>
+          <h5 className="text-xs font-bold tracking-widest text-gray-900 mb-4 flex items-center gap-2 uppercase">
+            <Puzzle className="text-blue-600 w-5 h-5" />
+            Rahaza Digital Merger
           </h5>
-          <p className="text-sm text-gray-400 mb-6 flex-grow leading-relaxed">
+          <p className="text-sm text-gray-600 mb-6 flex-grow leading-relaxed">
             Gabungkan beberapa project Google Apps Script (HTML/JS) ke dalam satu SPA menggunakan isolasi Iframe (Sandbox Architecture). Aman dari konflik variabel dan CSS.
           </p>
           <div>
             <button 
               onClick={() => setView('merger')}
-              className="w-full py-3 bg-white/10 text-white border border-white/10 text-xs font-bold tracking-[0.2em] rounded-xl hover:bg-blue-500/20 hover:text-blue-400 hover:border-blue-500/30 transition-all uppercase"
+              className="w-full py-3 bg-gray-50 text-gray-700 border border-gray-200 text-xs font-bold tracking-[0.2em] rounded-xl hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all uppercase"
             >
               Buka Alat Merger
             </button>
@@ -33,19 +33,19 @@ export function Dashboard({ setView }: DashboardProps) {
         </div>
 
         {/* PWA Card */}
-        <div className="bg-gradient-to-br from-indigo-900/20 to-transparent border border-white/10 rounded-2xl p-6 flex flex-col h-full relative overflow-hidden shadow-xl">
-           <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-[50px] pointer-events-none"></div>
-          <h5 className="text-xs font-bold tracking-widest text-white mb-4 flex items-center gap-2 uppercase">
-            <AppWindow className="text-indigo-400 w-5 h-5" />
+        <div className="bg-gradient-to-br from-indigo-50 to-white border border-gray-200 rounded-2xl p-6 flex flex-col h-full relative overflow-hidden shadow-sm">
+           <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-100 rounded-full blur-[50px] pointer-events-none"></div>
+          <h5 className="text-xs font-bold tracking-widest text-gray-900 mb-4 flex items-center gap-2 uppercase">
+            <AppWindow className="text-indigo-600 w-5 h-5" />
             PWA XML Generator
           </h5>
-          <p className="text-sm text-gray-400 mb-6 flex-grow leading-relaxed">
+          <p className="text-sm text-gray-600 mb-6 flex-grow leading-relaxed">
             Ubah WebApp GAS menjadi aplikasi yang bisa diinstall di beranda (PWA) melalui inject template XML Blogger.
           </p>
           <div>
             <button 
               onClick={() => setView('pwa')}
-              className="w-full py-3 bg-white/10 text-white border border-white/10 text-xs font-bold tracking-[0.2em] rounded-xl hover:bg-indigo-500/20 hover:text-indigo-400 hover:border-indigo-500/30 transition-all uppercase"
+              className="w-full py-3 bg-white text-gray-700 border border-gray-200 text-xs font-bold tracking-[0.2em] rounded-xl hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-200 transition-all uppercase"
             >
               Buka XML Generator
             </button>
