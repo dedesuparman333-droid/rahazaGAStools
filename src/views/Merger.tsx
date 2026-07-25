@@ -1,7 +1,159 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, FileCode2, FileCode, Wand2, CheckCircle2, Copy, Check, Monitor } from 'lucide-react';
+import { Plus, Trash2, FileCode2, FileCode, Wand2, CheckCircle2, Copy, Check, Monitor, ChevronDown, ListPlus } from 'lucide-react';
 import { MergerModule } from '../types';
 import { escapeHtml, base64EncodeSafe } from '../lib/utils';
+
+const BOILERPLATES = [
+  {
+    name: 'Simple Calculator',
+    gs: `function calculate(a, b, op) {
+  switch(op) {
+    case '+': return a + b;
+    case '-': return a - b;
+    case '*': return a * b;
+    case '/': return b !== 0 ? a / b : 'Error: Division by zero';
+    default: return 'Invalid operation';
+  }
+}`,
+    html: `<div class="p-4 border rounded shadow-sm max-w-sm">
+  <h3 class="mb-3">Calculator</h3>
+  <div class="mb-3 d-flex gap-2">
+    <input type="number" id="calc-a" class="form-control" placeholder="A">
+    <select id="calc-op" class="form-select">
+      <option value="+">+</option>
+      <option value="-">-</option>
+      <option value="*">*</option>
+      <option value="/">/</option>
+    </select>
+    <input type="number" id="calc-b" class="form-control" placeholder="B">
+  </div>
+  <button class="btn btn-primary w-100 mb-3" onclick="doCalc()">Calculate</button>
+  <div class="alert alert-info" id="calc-res">Result: -</div>
+</div>
+<script>
+  function doCalc() {
+    const a = parseFloat(document.getElementById('calc-a').value) || 0;
+    const b = parseFloat(document.getElementById('calc-b').value) || 0;
+    const op = document.getElementById('calc-op').value;
+    google.script.run.withSuccessHandler(res => {
+      document.getElementById('calc-res').innerText = 'Result: ' + res;
+    }).calculate(a, b, op);
+  }
+</script>`
+  },
+  {
+    name: 'Task Tracker',
+    gs: `let tasks = []; // Mock database for this session
+
+function getTasks() {
+  return tasks;
+}
+
+function addTask(title) {
+  const task = { id: Date.now(), title, status: 'pending' };
+  tasks.push(task);
+  return tasks;
+}
+
+function toggleTask(id) {
+  const t = tasks.find(x => x.id === id);
+  if (t) t.status = t.status === 'pending' ? 'done' : 'pending';
+  return tasks;
+}`,
+    html: `<div class="p-4 max-w-md border rounded shadow-sm">
+  <h3>Task Tracker</h3>
+  <div class="d-flex gap-2 mb-3">
+    <input type="text" id="taskInput" class="form-control" placeholder="New task...">
+    <button class="btn btn-primary" onclick="addNewTask()">Add</button>
+  </div>
+  <ul class="list-group" id="taskList"></ul>
+</div>
+<script>
+  function renderTasks(ts) {
+    const list = document.getElementById('taskList');
+    list.innerHTML = '';
+    ts.forEach(t => {
+      const li = document.createElement('li');
+      li.className = 'list-group-item d-flex justify-content-between align-items-center';
+      li.innerHTML = \`
+        <span style="\${t.status === 'done' ? 'text-decoration: line-through' : ''}">\${t.title}</span>
+        <button class="btn btn-sm btn-outline-secondary" onclick="toggleT(\${t.id})">\${t.status === 'pending' ? 'Done' : 'Undo'}</button>
+      \`;
+      list.appendChild(li);
+    });
+  }
+  
+  function addNewTask() {
+    const input = document.getElementById('taskInput');
+    if(!input.value.trim()) return;
+    google.script.run.withSuccessHandler(renderTasks).addTask(input.value);
+    input.value = '';
+  }
+  
+  function toggleT(id) {
+    google.script.run.withSuccessHandler(renderTasks).toggleTask(id);
+  }
+  
+  // Initial load
+  google.script.run.withSuccessHandler(renderTasks).getTasks();
+</script>`
+  },
+  {
+    name: 'Data Table',
+    gs: `function getTableData() {
+  return [
+    { id: 1, name: 'Alice Smith', email: 'alice@example.com', role: 'Admin' },
+    { id: 2, name: 'Bob Johnson', email: 'bob@example.com', role: 'User' },
+    { id: 3, name: 'Charlie Brown', email: 'charlie@example.com', role: 'Editor' }
+  ];
+}`,
+    html: `<div class="p-4 border rounded shadow-sm">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>User Data</h3>
+    <button class="btn btn-primary btn-sm" onclick="loadData()">Refresh</button>
+  </div>
+  <table class="table table-hover table-bordered">
+    <thead class="table-light">
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Role</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody">
+      <tr><td colspan="4" class="text-center text-muted">Loading...</td></tr>
+    </tbody>
+  </table>
+</div>
+<script>
+  function loadData() {
+    document.getElementById('tableBody').innerHTML = '<tr><td colspan="4" class="text-center text-muted">Loading...</td></tr>';
+    google.script.run.withSuccessHandler(data => {
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = '';
+      if(!data || data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="text-center">No data found</td></tr>';
+        return;
+      }
+      data.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = \`
+          <td>\${row.id}</td>
+          <td>\${row.name}</td>
+          <td>\${row.email}</td>
+          <td><span class="badge bg-secondary">\${row.role}</span></td>
+        \`;
+        tbody.appendChild(tr);
+      });
+    }).getTableData();
+  }
+  
+  // Load data initially
+  loadData();
+</script>`
+  }
+];
 
 export function Merger() {
   const [modules, setModules] = useState<MergerModule[]>([
@@ -13,10 +165,40 @@ export function Merger() {
   const [outHtml, setOutHtml] = useState('');
   const [showOutput, setShowOutput] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [showTemplates, setShowTemplates] = useState(false);
+  const [spreadsheetId, setSpreadsheetId] = useState('');
+  const [validationError, setValidationError] = useState('');
+
+  const validateSpreadsheetId = (id: string) => {
+    if (!id.trim()) {
+      setValidationError('');
+      return true;
+    }
+    // Check if it's a typical 44 character base62/64 string
+    const regex = /^[a-zA-Z0-9-_]{40,50}$/;
+    if (!regex.test(id)) {
+      setValidationError('Format Spreadsheet ID tidak valid (biasanya 44 karakter alfanumerik)');
+      return false;
+    }
+    setValidationError('');
+    return true;
+  };
+
+  const handleSpreadsheetIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setSpreadsheetId(val);
+    validateSpreadsheetId(val);
+  };
 
   const addModule = () => {
     const newId = Date.now().toString();
     setModules([...modules, { id: newId, name: `Modul ${modules.length + 1}`, gs: '', html: '' }]);
+  };
+
+  const addTemplate = (template: typeof BOILERPLATES[0]) => {
+    const newId = Date.now().toString();
+    setModules([...modules, { id: newId, name: template.name, gs: template.gs, html: template.html }]);
+    setShowTemplates(false);
   };
 
   const updateModule = (id: string, field: keyof MergerModule, value: string) => {
@@ -28,7 +210,16 @@ export function Merger() {
   };
 
   const generateMerge = () => {
+    if (validationError) {
+      alert("Harap perbaiki error pada Form Validasi: " + validationError);
+      return;
+    }
+
     let combinedGS = `/* Gabungan via GAS WebApp Merger */\n\n`;
+    if (spreadsheetId) {
+      combinedGS += `// Global Configuration\nconst GLOBAL_SPREADSHEET_ID = "${spreadsheetId}";\n// Pastikan Anda memodifikasi fungsi modul Anda agar membaca GLOBAL_SPREADSHEET_ID jika diperlukan.\n\n`;
+    }
+
     let navHtml = '';
     let templatesHtml = '';
     let isFirst = true;
@@ -162,13 +353,81 @@ export function Merger() {
           <h3 className="text-xs font-bold tracking-widest text-gray-400 m-0 uppercase">GAS WebApp Merger</h3>
           <p className="text-gray-500 text-[10px] uppercase tracking-widest mt-1">Sistem Penggabungan Modul</p>
         </div>
-        <button 
-          onClick={addModule}
-          className="flex items-center gap-2 border border-blue-500/50 text-blue-400 hover:bg-blue-500/10 px-4 py-2 rounded-lg text-xs font-bold tracking-widest uppercase transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          <span className="hidden sm:inline">Tambah Modul</span>
-        </button>
+        <div className="flex items-center gap-3 relative">
+          <div className="relative">
+            <button 
+              onClick={() => setShowTemplates(!showTemplates)}
+              className="flex items-center gap-2 bg-indigo-500/10 border border-indigo-500/50 text-indigo-400 hover:bg-indigo-500/20 px-4 py-2 rounded-lg text-xs font-bold tracking-widest uppercase transition-colors"
+            >
+              <ListPlus className="w-4 h-4" />
+              <span className="hidden sm:inline">Templates</span>
+              <ChevronDown className={`w-3 h-3 transition-transform ${showTemplates ? 'rotate-180' : ''}`} />
+            </button>
+            
+            {showTemplates && (
+              <div className="absolute top-full right-0 mt-2 w-56 bg-[#1a1b26] border border-white/10 rounded-xl shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2">
+                <div className="p-2 border-b border-white/5 bg-black/20">
+                  <span className="text-[10px] uppercase tracking-widest text-gray-500 font-bold px-2">Pilih Template</span>
+                </div>
+                <div className="p-1">
+                  {BOILERPLATES.map((tmpl, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => addTemplate(tmpl)}
+                      className="w-full text-left px-3 py-2.5 text-sm text-gray-300 hover:bg-white/5 hover:text-white rounded-lg transition-colors flex items-center gap-2"
+                    >
+                      <FileCode className="w-4 h-4 text-indigo-400" />
+                      {tmpl.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+          
+          <button 
+            onClick={addModule}
+            className="flex items-center gap-2 border border-blue-500/50 text-blue-400 hover:bg-blue-500/10 px-4 py-2 rounded-lg text-xs font-bold tracking-widest uppercase transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+            <span className="hidden sm:inline">Tambah Modul</span>
+          </button>
+        </div>
+      </div>
+
+      <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-6">
+        <h4 className="font-bold text-white mb-4 text-sm flex items-center gap-2">
+          Global Settings
+        </h4>
+        <div className="flex flex-col gap-2">
+          <label className="text-xs text-gray-400">
+            Global Spreadsheet ID (Opsional)
+          </label>
+          <input 
+            type="text" 
+            placeholder="Contoh: 1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms"
+            value={spreadsheetId}
+            onChange={handleSpreadsheetIdChange}
+            className={`bg-black/40 border ${validationError ? 'border-red-500/50 focus:border-red-500' : 'border-white/10 focus:border-blue-500/50'} text-white p-3 rounded-lg text-sm w-full focus:outline-none transition-colors`}
+          />
+          {validationError && (
+            <p className="text-red-400 text-xs mt-1">{validationError}</p>
+          )}
+          <p className="text-gray-500 text-[10px] mt-1">
+            Jika diisi, konstanta <code>GLOBAL_SPREADSHEET_ID</code> akan ditambahkan ke bagian atas kode <code>Code.gs</code> untuk dipakai semua modul.
+          </p>
+        </div>
+      </div>
+
+      <div className="bg-blue-500/10 border border-blue-500/20 rounded-2xl p-5 mb-6 text-blue-200 text-sm leading-relaxed">
+        <h4 className="font-bold text-blue-400 mb-2 flex items-center gap-2">
+          <Monitor className="w-4 h-4" /> Tips Penggabungan (Wajib Dilakukan Manual oleh User)
+        </h4>
+        <ul className="list-disc pl-5 space-y-2 opacity-90 text-xs">
+          <li><strong>Konflik Variabel Global:</strong> Tools ini tidak mengganti nama variabel Anda secara otomatis. Jika menggunakan Spreadsheet ID (<code>var SPREADSHEET_ID = "..."</code>), <strong>Anda harus menggantinya secara manual</strong> (misal <code>ID_MODUL_A</code> dan <code>ID_MODUL_B</code>) pada kode sebelum/sesudah digabung agar tidak bentrok.</li>
+          <li><strong>Konflik Nama Fungsi:</strong> <code>google.script.run</code> hanya memanggil fungsi global. <strong>Ubah nama fungsi</strong> secara manual jika ada nama fungsi yang sama (misal <code>simpanData()</code>) di kedua modul. Jangan lupa update juga pemanggilannya di kode HTML!</li>
+          <li><strong>Otorisasi Akses:</strong> Setelah kode digabungkan dan di-paste ke Google Apps Script, <strong>Anda wajib menekan tombol "Run"</strong> pada salah satu fungsi secara manual di editor GAS. Ini untuk memicu jendela popup konfirmasi izin akses ke Spreadsheet Anda.</li>
+        </ul>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
